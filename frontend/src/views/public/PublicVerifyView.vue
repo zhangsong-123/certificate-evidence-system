@@ -57,6 +57,13 @@ async function verifyFile() {
   }
 }
 
+async function verifyNewCertificate(no?: string) {
+  if (!no) return
+  certificateNo.value = no
+  selectedFile.value = undefined
+  await verifyNo()
+}
+
 onMounted(() => {
   if (certificateNo.value) verifyNo()
 })
@@ -116,6 +123,20 @@ onMounted(() => {
           <div><span>回执存在</span><b>{{ result.receipt_exists ? '是' : '否' }}</b></div>
           <div><span>回执编号</span><b>{{ result.receipt_id || '—' }}</b></div>
           <div><span>撤销时间</span><b>{{ result.revoked_at || '—' }}</b></div>
+          <div>
+            <span>补发证书编号</span>
+            <b>
+              <el-button
+                v-if="result.new_certificate_no"
+                link
+                type="primary"
+                @click="verifyNewCertificate(result.new_certificate_no)"
+              >
+                {{ result.new_certificate_no }}
+              </el-button>
+              <template v-else>—</template>
+            </b>
+          </div>
         </div>
         <dl class="hash-list">
           <dt>系统存证哈希</dt><dd>{{ result.stored_hash || result.certificate_hash || '—' }}</dd>
